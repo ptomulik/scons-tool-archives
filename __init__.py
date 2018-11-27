@@ -31,6 +31,7 @@ import re
 import tarfile
 import zipfile
 import SCons.Builder
+import SCons.Util
 
 
 _tarfile_modes =  [
@@ -73,14 +74,16 @@ def _apply_path_mappings(path, mapitems):
             return mapped
     return '/'.join(_split_path(path, False))
 
+def _is_pair(x):
+    return SCons.Util.is_Sequence(x) and len(x) == 2
 
 def _map_path(path, mappings):
-    if isinstance(mappings, str):
-        mapitems = ((p, None) for p in mappings.split(os.path.pathsep))
-    elif isinstance(mappings, (list, tuple)):
-        mapitems = ((p, None) if isinstance(p, str) else p for p in mappings)
-    elif isinstance(mappings, dict):
-        mapitems = mappings.items()
+    if SCons.Util.is_String(mappings):
+        mapitems = ((str(p), None) for p in mappings.split(os.path.pathsep))
+    elif SCons.Util.is_Sequence(mappings):
+        mapitems = ((str(p[0]), str(p[1])) if _is_pair(p) else (str(p), None) for p in mappings)
+    elif SCons.Util.is_Dict(mappings):
+        mapitems = ((str(k), str(v)) for k, v in mappings.items())
     elif mappings:
         mapitems = mappings
     else:
