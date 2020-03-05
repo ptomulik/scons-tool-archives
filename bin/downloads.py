@@ -109,6 +109,9 @@ def download_scons_test(**kw):
     shutil.move(os.path.join(destdir, 'runtest.py'), os.path.join(destdir, 'runtest'))
     return 0
 
+def is_for_py2():
+    return sys.version_info.major == 2 or (os.getenv('TOXENV') or '').startswith('py2')
+
 # The script...
 _script = os.path.basename(sys.argv[0])
 _scriptabs = os.path.realpath(sys.argv[0])
@@ -121,10 +124,10 @@ _default_packages = [ 'scons-test', ]
 
 # scons versions other than x.y.z
 _scons_versions = ['master', '2.1.0.final.0']
-_default_scons_version = _scons_versions[0]
-
-# scons-test
-_default_scons_test_version = _scons_versions[0]
+# default scons version
+_default_scons_version = '3.0.5' if is_for_py2() else _scons_versions[0]
+# default scons-test version
+_default_scons_test_version = _default_scons_version
 
 _parser = argparse.ArgumentParser(
         prog=_script,
