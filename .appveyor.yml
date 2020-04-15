@@ -10,7 +10,7 @@ environment:
     - TARGET: mingw64
       PYTHON: "C:\\msys64\\mingw64\\bin"
       PYPATH: "C:\\msys64\\home\\appveyor\\.local\\bin;%PYTHON%;C:\\msys64\\usr\\local\\bin;C:\\msys64\\usr\\bin"
-      PY: python
+      PY: python3
     - TARGET: win32
       PYTHON: "C:\\Python27-x64"
       PYPATH: "%APPDATA%\\Python\\Scripts;%PYTHON%;%PYTHON%\\Scripts"
@@ -40,6 +40,7 @@ install:
   - IF [%TARGET%]==[mingw64] SET "MSYS2_PATH_TYPE=minimal"
     # variables for: win 32
   - IF [%TARGET%]==[win32] SET "PATH=%PYPATH%;%PATH%"
+  - SET "TESTCOMMON_PASS_SKIPS=1"
     # install comands
   - .appveyor/install-%TARGET%.bat
 
